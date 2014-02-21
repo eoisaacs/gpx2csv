@@ -32,7 +32,7 @@ for x in range(0, len(fileNames)):
 
 #write csv file for each gpx with heading and data sorted by column
 	targetPath = os.path.join(csvDir,fileNames[x])
-	with open(targetPath + '.csv', 'w') as csvfile:
+	with open(targetPath + '.csv', 'wb') as csvfile:
 		datawriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 		datawriter.writerow(['time', 'lat', 'lon', 'elevation', 'hr'])
 		for x in range(0, len(trackPoints)):
