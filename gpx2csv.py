@@ -34,6 +34,8 @@ for x in range(0, len(fileNames)):
 	targetPath = os.path.join(csvDir,fileNames[x])
 	with open(targetPath + '.csv', 'wb') as csvfile:
 		datawriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-		datawriter.writerow(['time', 'lat', 'lon', 'elevation', 'hr'])
+		for x in range(0, 4):
+			datawriter.writerow([])
+		datawriter.writerow(['Time', 'blank', 'blank', 'blank', 'blank', 'blank', 'Hrate', 'blank', 'Altitude (m)', 'blank', 'blank', 'Latitude', 'Longitude', 'blank', 'blank', 'blank', 'blank', 'blank'])
 		for x in range(0, len(trackPoints)):
-			datawriter.writerow([time[x].text, trackPoints[x].attrib['lat'], trackPoints[x].attrib['lon'], elevation[x].text, hr[x].text])
+			datawriter.writerow([time[x].text, '0', '0', '0', '0', '0',  hr[x].text, '0', elevation[x].text,  '0', '0', trackPoints[x].attrib['lat'], trackPoints[x].attrib['lon'], '0', '0', '0', '0', '0'])
