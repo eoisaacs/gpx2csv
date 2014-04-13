@@ -1,5 +1,5 @@
 #usage:
-#python3 gpx2csv.py outputDirectory
+#python gpx2csv.py outputDirectory
 #remember to escape spaces in file paths with \
 
 #load required modules
@@ -7,6 +7,7 @@ import sys
 import os
 import xml.etree.ElementTree as ET
 import csv
+import datetime
 
 #get the full path of the source, parent directory of source, list of files in source, and remove .DS_Store file from list
 directory = os.path.abspath(sys.argv[1])
@@ -30,6 +31,11 @@ for x in range(0, len(fileNames)):
 	elevation = tree.findall('.//{http://www.topografix.com/GPX/1/1}ele')
 	hr = tree.findall('.//{http://www.garmin.com/xmlschemas/TrackPointExtension/v1}hr')
 
+	#converts ISO8601 formatted time strings to datetime objects
+	timeParsed = [datetime.datetime.strptime(time[y].text, '%Y-%m-%dT%H:%M:%SZ') for y in range(0,len(time))]
+	#converts raw time data to elapsed time from beginning of ride
+	timeElapsed = [timeParsed[z]-timeParsed[0] for z in range(0,len(time))]
+
 #write csv file for each gpx with heading and data sorted by column
 	targetPath = os.path.join(csvDir,fileNames[x])
 	with open(targetPath + '.csv', 'wb') as csvfile:
@@ -38,4 +44,4 @@ for x in range(0, len(fileNames)):
 			datawriter.writerow([])
 		datawriter.writerow(['Time', 'blank', 'blank', 'blank', 'blank', 'blank', 'Hrate', 'blank', 'Altitude (m)', 'blank', 'blank', 'Latitude', 'Longitude', 'blank', 'blank', 'blank', 'blank', 'blank'])
 		for x in range(0, len(trackPoints)):
-			datawriter.writerow([time[x].text, '0', '0', '0', '0', '0',  hr[x].text, '0', elevation[x].text,  '0', '0', trackPoints[x].attrib['lat'], trackPoints[x].attrib['lon'], '0', '0', '0', '0', '0'])
+			datawriter.writerow([timeElapsed[x].seconds/60.0, '0', '0', '0', '0', '0',  hr[x].text, '0', elevation[x].text,  '0', '0', trackPoints[x].attrib['lat'], trackPoints[x].attrib['lon'], '0', '0', '0', '0', '0'])
