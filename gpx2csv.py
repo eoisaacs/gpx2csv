@@ -25,18 +25,17 @@ if not os.path.exists(csvDir):
 #parse gpx files for desired data
 for x in range(0, len(fileNames)):
 	tree = ET.parse(filePaths[x])
-	root = tree.getroot()
-	time = tree.findall('.//{http://www.topografix.com/GPX/1/1}time')
+	time = tree.findall('.//{http://www.topografix.com/GPX/1/1}trkpt/{http://www.topografix.com/GPX/1/1}time')
 	trackPoints = tree.findall('.//{http://www.topografix.com/GPX/1/1}trkpt')
 	elevation = tree.findall('.//{http://www.topografix.com/GPX/1/1}ele')
 	hr = tree.findall('.//{http://www.garmin.com/xmlschemas/TrackPointExtension/v1}hr')
 
 	#converts ISO8601 formatted time strings to datetime objects
 	timeParsed = [datetime.datetime.strptime(time[y].text, '%Y-%m-%dT%H:%M:%SZ') for y in range(0,len(time))]
-	#converts raw time data to elapsed time from beginning of ride
+	#converts raw time data to elapsed time from beginning of track
 	timeElapsed = [timeParsed[z]-timeParsed[0] for z in range(0,len(time))]
 
-#write csv file for each gpx with heading and data sorted by column
+	#write csv file for each gpx with heading and data sorted by column
 	targetPath = os.path.join(csvDir,fileNames[x])
 	with open(targetPath + '.csv', 'wb') as csvfile:
 		datawriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
